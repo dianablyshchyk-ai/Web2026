@@ -9,13 +9,13 @@ const { data: response, pending } = await useFetch('https://dummyjson.com/produc
 const products = computed(() => response.value?.products || [])
 
 const columns = [
-  { key: 'thumbnail', label: 'Фото' },
-  { key: 'title', label: 'Назва', sortable: true },
-  { key: 'description', label: 'Опис' },
-  { key: 'price', label: 'Ціна', sortable: true },
-  { key: 'rating', label: 'Оцінка', sortable: true },
-  { key: 'brand', label: 'Бренд' },
-  { key: 'category', label: 'Категорія' }
+  { id: 'img', key: 'thumbnail', label: 'Фото' },
+  { id: 'name', key: 'title', label: 'Назва', sortable: true },
+  { id: 'desc', key: 'description', label: 'Опис' },
+  { id: 'price', key: 'price', label: 'Ціна', sortable: true },
+  { id: 'rate', key: 'rating', label: 'Оцінка', sortable: true },
+  { id: 'brand', key: 'brand', label: 'Бренд' },
+  { id: 'cat', key: 'category', label: 'Категорія' }
 ]
 
 const q = ref('')
