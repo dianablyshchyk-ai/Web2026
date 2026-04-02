@@ -16,7 +16,7 @@ console.log("Привіт, " + fullName + "!");
 
 
 console.log("\nЗавдання 3: Умовний оператор (if/else)");
-let age = 20;
+const age = 20;
 if (age >= 18) {
     console.log("Доступ дозволено");
 } else {
@@ -39,3 +39,4 @@ console.log("\nЗавдання 6: Робота з масивами");
 const fruits = ["Ківі", "Банан", "Персик"];
 fruits.push("Яблуко");
 console.log("Список фруктів:", fruits);
+console.log(fruits[1]);
