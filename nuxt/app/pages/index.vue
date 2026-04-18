@@ -1,5 +1,6 @@
 <script setup>
 import { ref, computed } from 'vue'
+import { useSubscriptionStore } from '~/stores/useSubscriptionStore' // Підключаємо наш стор
 
 useHead({
   title: 'Список продуктів',
@@ -8,11 +9,13 @@ useHead({
   ]
 })
 
+const subscriptionStore = useSubscriptionStore() // Ініціалізуємо стор
 const billingCycle = ref('annual')
 const { data: rawProducts } = await useFetch('/api/products')
 
-const goToCheckout = (slug, cycle) => {
-  navigateTo(`/checkout?plan=${slug}&cycle=${cycle}`)
+const goToCheckout = (item, cycle) => {
+  subscriptionStore.setPlan(item, cycle)
+  navigateTo('/checkout')
 }
 
 const products = computed(() => {
@@ -120,7 +123,7 @@ const products = computed(() => {
 
           <div class="flex justify-center mb-6">
             <button
-              @click="goToCheckout(item.slug, billingCycle)"
+              @click="goToCheckout(item, billingCycle)"
               class="w-[90%] py-2.5 px-4 bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600 text-slate-800 text-[14px] font-bold rounded-md shadow-sm transition-all tracking-wide cursor-pointer uppercase"
             >
               {{ item.buttonText }}

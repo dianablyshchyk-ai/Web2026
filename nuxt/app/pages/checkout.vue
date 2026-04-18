@@ -1,24 +1,14 @@
 <script setup>
 import { ref, computed } from 'vue'
+import { storeToRefs } from 'pinia'
+import { useSubscriptionStore } from '~/stores/useSubscriptionStore'
 
-const route = useRoute()
-const planSlug = route.query.plan || 'starter'
-const cycle = route.query.cycle || 'annual'
-
-const { data: products } = await useFetch('/api/products')
-
-const selectedPlan = computed(() => {
-  if (!products.value) return null
-  const product = products.value.find(p => p.slug === planSlug)
-  if (!product) return null
-  const pricing = product[cycle]
-  return { ...pricing, features: product.features }
-})
+const subscriptionStore = useSubscriptionStore()
+const { selectedPlan, billingCycle: cycle } = storeToRefs(subscriptionStore)
 
 useHead({
   title: computed(() => `Checkout - ${selectedPlan.value?.title || 'Subscription'}`)
 })
-
 
 const formattedDate = computed(() => {
   const date = new Date();
@@ -71,12 +61,13 @@ const handlePayment = async () => {
       body: {
         plan: selectedPlan.value.title,
         price: priceToSubmit,
-        billingCycle: cycle,
+        billingCycle: cycle.value,
         trialEnds: formattedDate.value,
         ...form.value
       }
     })
     alert('Вітаємо! Ваш 3-денний пробний період розпочато.')
+    subscriptionStore.clearPlan() // Очищаємо стор після успішної оплати
     navigateTo('/')
   } catch (e) { alert('Помилка при створенні підписки') } finally { isSubmitting.value = false }
 }
@@ -218,6 +209,14 @@ const handlePayment = async () => {
           </div>
         </div>
       </div>
+
+      <div v-else class="text-center py-20">
+        <h2 class="text-2xl font-bold mb-4">Упс! Тариф не обрано.</h2>
+        <NuxtLink to="/" class="px-6 py-3 bg-blue-500 text-white rounded-lg font-bold">
+          Повернутися до вибору тарифу
+        </NuxtLink>
+      </div>
+
     </div>
   </div>
 </template>
